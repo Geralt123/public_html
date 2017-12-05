@@ -226,11 +226,11 @@ td.forum_cat, td.forum_tops
 	padding-left:15px;
 	text-align:left;
 }
-.categories_table td, .categories_table th, .topics_table td, .topics_table th, .list_pm td, .list_pm th
+.bands_table td, .bands_table th, .songs_table td, .songs_table th, .list_pm td, .list_pm th
 {
 	border-bottom:1px solid #cccccc;
 }
-.categories_table tr:last-child td, .topics_table tr:last-child td, .list_pm tr:last-child td
+.bands_table tr:last-child td, .songs_table tr:last-child td, .list_pm tr:last-child td
 {
 	border-bottom:0px;
 }
