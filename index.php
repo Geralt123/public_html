@@ -1,5 +1,5 @@
 <?php
-//This page displays the list of the forum's categories
+//This page displays the list of the forum's bands
 include('config.php');
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -48,13 +48,13 @@ else
 if(isset($_SESSION['username']) and $_SESSION['username']==$admin)
 {
 ?>
-	<a href="new_category.php" class="button">New Category</a>
+	<a href="new_band.php" class="button">New band</a>
 <?php
 }
 ?>
-<table class="categories_table">
+<table class="bands_table">
 	<tr>
-    	<th class="forum_cat">Category</th>
+    	<th class="forum_cat">band</th>
     	<th class="forum_ntop">Bands</th>
     	<th class="forum_nrep">Replies</th>
 <?php
@@ -67,7 +67,7 @@ if(isset($_SESSION['username']) and $_SESSION['username']==$admin)
 ?>
 	</tr>
 <?php
-$dn1 = mysql_query('select c.id, c.name, c.description, c.position, (select count(t.id) from bands as t where t.parent=c.id and t.id2=1) as bands, (select count(t2.id) from bands as t2 where t2.parent=c.id and t2.id2!=1) as replies from categories as c group by c.id order by c.position asc');
+$dn1 = mysql_query('select c.id, c.name, c.description, c.position, (select count(t.id) from bands as t where t.parent=c.id and t.id2=1) as bands, (select count(t2.id) from bands as t2 where t2.parent=c.id and t2.id2!=1) as replies from bands as c group by c.id order by c.position asc');
 $nb_cats = mysql_num_rows($dn1);
 while($dnn1 = mysql_fetch_array($dn1))
 {
@@ -81,10 +81,10 @@ while($dnn1 = mysql_fetch_array($dn1))
 if(isset($_SESSION['username']) and $_SESSION['username']==$admin)
 {
 ?>
-    	<td><a href="delete_category.php?id=<?php echo $dnn1['id']; ?>"><img src="<?php echo $design; ?>/images/delete.png" alt="Delete" /></a>
-		<?php if($dnn1['position']>1){ ?><a href="move_category.php?action=up&id=<?php echo $dnn1['id']; ?>"><img src="<?php echo $design; ?>/images/up.png" alt="Move Up" /></a><?php } ?>
-		<?php if($dnn1['position']<$nb_cats){ ?><a href="move_category.php?action=down&id=<?php echo $dnn1['id']; ?>"><img src="<?php echo $design; ?>/images/down.png" alt="Move Down" /></a><?php } ?>
-		<a href="edit_category.php?id=<?php echo $dnn1['id']; ?>"><img src="<?php echo $design; ?>/images/edit.png" alt="Edit" /></a></td>
+    	<td><a href="delete_band.php?id=<?php echo $dnn1['id']; ?>"><img src="<?php echo $design; ?>/images/delete.png" alt="Delete" /></a>
+		<?php if($dnn1['position']>1){ ?><a href="move_band.php?action=up&id=<?php echo $dnn1['id']; ?>"><img src="<?php echo $design; ?>/images/up.png" alt="Move Up" /></a><?php } ?>
+		<?php if($dnn1['position']<$nb_cats){ ?><a href="move_band.php?action=down&id=<?php echo $dnn1['id']; ?>"><img src="<?php echo $design; ?>/images/down.png" alt="Move Down" /></a><?php } ?>
+		<a href="edit_band.php?id=<?php echo $dnn1['id']; ?>"><img src="<?php echo $design; ?>/images/edit.png" alt="Edit" /></a></td>
 <?php
 }
 ?>
@@ -97,7 +97,7 @@ if(isset($_SESSION['username']) and $_SESSION['username']==$admin)
 if(isset($_SESSION['username']) and $_SESSION['username']==$admin)
 {
 ?>
-	<a href="new_category.php" class="button">New Category</a>
+	<a href="new_band.php" class="button">New band</a>
 <?php
 }
 if(!isset($_SESSION['username']))

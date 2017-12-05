@@ -7,7 +7,7 @@ if(isset($_GET['id'], $_GET['id2']))
 	$id2 = intval($_GET['id2']);
 if(isset($_SESSION['username']))
 {
-	$dn1 = mysql_fetch_array(mysql_query('select count(t.id) as nb1, t.authorid, t2.title, t.message, t.parent, c.name from topics as t, topics as t2, categories as c where t.id="'.$id.'" and t.id2="'.$id2.'" and t2.id="'.$id.'" and t2.id2=1 and c.id=t.parent group by t.id'));
+	$dn1 = mysql_fetch_array(mysql_query('select count(t.id) as nb1, t.authorid, t2.title, t.message, t.parent, c.name from songs as t, songs as t2, bands as c where t.id="'.$id.'" and t.id2="'.$id2.'" and t2.id="'.$id.'" and t2.id2=1 and c.id=t.parent group by t.id'));
 if($dn1['nb1']>0)
 {
 if($_SESSION['userid']==$dn1['authorid'] or $_SESSION['username']==$admin)
@@ -33,7 +33,7 @@ $nb_new_pm = $nb_new_pm['nb_new_pm'];
 ?>
 <div class="box">
 	<div class="box_left">
-    	<a href="<?php echo $url_home; ?>">Forum Index</a> &gt; <a href="list_topics.php?parent=<?php echo $dn1['parent']; ?>"><?php echo htmlentities($dn1['name'], ENT_QUOTES, 'UTF-8'); ?></a> &gt; <a href="read_topic.php?id=<?php echo $id; ?>"><?php echo htmlentities($dn1['title'], ENT_QUOTES, 'UTF-8'); ?></a> &gt; Edit a reply
+    	<a href="<?php echo $url_home; ?>">Forum Index</a> &gt; <a href="list_songs.php?parent=<?php echo $dn1['parent']; ?>"><?php echo htmlentities($dn1['name'], ENT_QUOTES, 'UTF-8'); ?></a> &gt; <a href="read_song.php?id=<?php echo $id; ?>"><?php echo htmlentities($dn1['title'], ENT_QUOTES, 'UTF-8'); ?></a> &gt; Edit a reply
     </div>
 	<div class="box_right">
     	<a href="list_pm.php">Your messages(<?php echo $nb_new_pm; ?>)</a> - <a href="profile.php?id=<?php echo $_SESSION['userid']; ?>"><?php echo htmlentities($_SESSION['username'], ENT_QUOTES, 'UTF-8'); ?></a> (<a href="login.php">Logout</a>)
@@ -69,11 +69,11 @@ if(isset($_POST['message']) and $_POST['message']!='')
 		$message = stripslashes($message);
 	}
 	$message = mysql_real_escape_string(bbcode_to_html($message));
-	if(mysql_query('update topics set title="'.$title.'", message="'.$message.'" where id="'.$id.'" and id2="'.$id2.'"'))
+	if(mysql_query('update songs set title="'.$title.'", message="'.$message.'" where id="'.$id.'" and id2="'.$id2.'"'))
 	{
 	?>
 	<div class="message">The message have successfully been edited.<br />
-	<a href="read_topic.php?id=<?php echo $id; ?>">Go the the topic</a></div>
+	<a href="read_song.php?id=<?php echo $id; ?>">Go the the song</a></div>
 	<?php
 	}
 	else

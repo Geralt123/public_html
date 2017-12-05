@@ -1,12 +1,12 @@
 <?php
-//This page let reply to a song
+//This page let users create new songs
 include('config.php');
-if(isset($_GET['id']))
+if(isset($_GET['parent']))
 {
-	$id = intval($_GET['id']);
+	$id = intval($_GET['parent']);
 if(isset($_SESSION['username']))
 {
-	$dn1 = mysql_fetch_array(mysql_query('select count(t.id) as nb1, t.title, t.parent, c.name from songs as t, bands as c where t.id="'.$id.'" and t.id2=1 and c.id=t.parent group by t.id'));
+	$dn1 = mysql_fetch_array(mysql_query('select count(c.id) as nb1, c.name from bands as c where c.id="'.$id.'"'));
 if($dn1['nb1']>0)
 {
 ?>
@@ -15,7 +15,7 @@ if($dn1['nb1']>0)
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link href="<?php echo $design; ?>/style.css" rel="stylesheet" title="Style" />
-        <title>Add a reply - <?php echo htmlentities($dn1['title'], ENT_QUOTES, 'UTF-8'); ?> - <?php echo htmlentities($dn1['name'], ENT_QUOTES, 'UTF-8'); ?> - Forum</title>
+        <title>New song - <?php echo htmlentities($dn1['name'], ENT_QUOTES, 'UTF-8'); ?> - Forum</title>
 		<script type="text/javascript" src="functions.js"></script>
     </head>
     <body>
@@ -29,39 +29,43 @@ $nb_new_pm = $nb_new_pm['nb_new_pm'];
 ?>
 <div class="box">
 	<div class="box_left">
-    	<a href="<?php echo $url_home; ?>">Forum Index</a> &gt; <a href="list_songs.php?parent=<?php echo $dn1['parent']; ?>"><?php echo htmlentities($dn1['name'], ENT_QUOTES, 'UTF-8'); ?></a> &gt; <a href="read_song.php?id=<?php echo $id; ?>"><?php echo htmlentities($dn1['title'], ENT_QUOTES, 'UTF-8'); ?></a> &gt; Add a reply
+    	<a href="<?php echo $url_home; ?>">Forum Index</a> &gt; <a href="list_songs.php?parent=<?php echo $id; ?>"><?php echo htmlentities($dn1['name'], ENT_QUOTES, 'UTF-8'); ?></a> &gt; New song
     </div>
 	<div class="box_right">
     	<a href="list_pm.php">Your messages(<?php echo $nb_new_pm; ?>)</a> - <a href="profile.php?id=<?php echo $_SESSION['userid']; ?>"><?php echo htmlentities($_SESSION['username'], ENT_QUOTES, 'UTF-8'); ?></a> (<a href="login.php">Logout</a>)
     </div>
-    <div class="clean"></div>
+	<div class="clean"></div>
 </div>
 <?php
-if(isset($_POST['message']) and $_POST['message']!='')
+if(isset($_POST['message'], $_POST['title']) and $_POST['message']!='' and $_POST['title']!='')
 {
 	include('bbcode_function.php');
+	$title = $_POST['title'];
 	$message = $_POST['message'];
 	if(get_magic_quotes_gpc())
 	{
+		$title = stripslashes($title);
 		$message = stripslashes($message);
 	}
+	$title = mysql_real_escape_string($title);
 	$message = mysql_real_escape_string(bbcode_to_html($message));
-	if(mysql_query('insert into songs (parent, id, id2, title, message, authorid, timestamp, timestamp2) select "'.$dn1['parent'].'", "'.$id.'", max(id2)+1, "", "'.$message.'", "'.$_SESSION['userid'].'", "'.time().'", "'.time().'" from songs where id="'.$id.'"') and mysql_query('update songs set timestamp2="'.time().'" where id="'.$id.'" and id2=1'))
+	if(mysql_query('insert into songs (parent, id, id2, title, message, authorid, timestamp, timestamp2) select "'.$id.'", ifnull(max(id), 0)+1, "1", "'.$title.'", "'.$message.'", "'.$_SESSION['userid'].'", "'.time().'", "'.time().'" from songs'))
 	{
 	?>
-	<div class="message">The message have successfully been sent.<br />
-	<a href="read_song.php?id=<?php echo $id; ?>">Go to the song</a></div>
+	<div class="message">The song have successfully been created.<br />
+	<a href="list_songs.php?parent=<?php echo $id; ?>">Go to the forum</a></div>
 	<?php
 	}
 	else
 	{
-		echo 'An error occurred while sending the message.';
+		echo 'An error occurred while creating the song.';
 	}
 }
 else
 {
 ?>
-<form action="new_reply.php?id=<?php echo $id; ?>" method="post">
+<form action="new_song.php?parent=<?php echo $id; ?>" method="post">
+	<label for="title">Title</label><input type="text" name="title" id="title"  /><br />
     <label for="message">Message</label><br />
     <div class="message_buttons">
         <input type="button" value="Bold" onclick="javascript:insert('[b]', '[/b]', 'message');" /><!--
@@ -87,7 +91,7 @@ else
 }
 else
 {
-	echo '<h2>The song you want to reply doesn\'t exist.</h2>';
+	echo '<h2>The band you want to add a song doesn\'t exist.</h2>';
 }
 }
 else
@@ -109,6 +113,6 @@ else
 }
 else
 {
-	echo '<h2>The ID of the song you want to reply is not defined.</h2>';
+	echo '<h2>The ID of the band you want to add a song is not defined.</h2>';
 }
 ?>

@@ -1,10 +1,10 @@
 <?php
-//This page let display the list of songs of a band
+//This page display a song
 include('config.php');
-if(isset($_GET['parent']))
+if(isset($_GET['id']))
 {
-	$id = intval($_GET['parent']);
-	$dn1 = mysql_fetch_array(mysql_query('select count(c.id) as nb1, c.name,count(t.id) as songs from bands as c left join songs as t on t.parent="'.$id.'" where c.id="'.$id.'" group by c.id'));
+	$id = intval($_GET['id']);
+	$dn1 = mysql_fetch_array(mysql_query('select count(t.id) as nb1, t.title, t.parent, count(t2.id) as nb2, c.name from songs as t, songs as t2, bands as c where t.id="'.$id.'" and t.id2=1 and t2.id="'.$id.'" and c.id=t.parent group by t.id'));
 if($dn1['nb1']>0)
 {
 ?>
@@ -13,7 +13,7 @@ if($dn1['nb1']>0)
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link href="<?php echo $design; ?>/style.css" rel="stylesheet" title="Style" />
-        <title><?php echo htmlentities($dn1['name'], ENT_QUOTES, 'UTF-8'); ?> - Forum</title>
+        <title><?php echo htmlentities($dn1['title'], ENT_QUOTES, 'UTF-8'); ?> - <?php echo htmlentities($dn1['name'], ENT_QUOTES, 'UTF-8'); ?> - Forum</title>
     </head>
     <body>
     	<div class="header">
@@ -28,12 +28,12 @@ $nb_new_pm = $nb_new_pm['nb_new_pm'];
 ?>
 <div class="box">
 	<div class="box_left">
-    	<a href="<?php echo $url_home; ?>">Forum Index</a> &gt; <a href="list_songs.php?parent=<?php echo $id; ?>"><?php echo htmlentities($dn1['name'], ENT_QUOTES, 'UTF-8'); ?></a>
+    	<a href="<?php echo $url_home; ?>">Forum Index</a> &gt; <a href="list_songs.php?parent=<?php echo $dn1['parent']; ?>"><?php echo htmlentities($dn1['name'], ENT_QUOTES, 'UTF-8'); ?></a> &gt; <a href="read_song.php?id=<?php echo $id; ?>"><?php echo htmlentities($dn1['title'], ENT_QUOTES, 'UTF-8'); ?></a> &gt; Read the song
     </div>
 	<div class="box_right">
     	<a href="list_pm.php">Your messages(<?php echo $nb_new_pm; ?>)</a> - <a href="profile.php?id=<?php echo $_SESSION['userid']; ?>"><?php echo htmlentities($_SESSION['username'], ENT_QUOTES, 'UTF-8'); ?></a> (<a href="login.php">Logout</a>)
     </div>
-	<div class="clean"></div>
+    <div class="clean"></div>
 </div>
 <?php
 }
@@ -42,72 +42,55 @@ else
 ?>
 <div class="box">
 	<div class="box_left">
-    	<a href="<?php echo $url_home; ?>">Forum Index</a> &gt; <a href="list_songs.php?parent=<?php echo $id; ?>"><?php echo htmlentities($dn1['name'], ENT_QUOTES, 'UTF-8'); ?></a>
+    	<a href="<?php echo $url_home; ?>">Forum Index</a> &gt; <a href="list_songs.php?parent=<?php echo $dn1['parent']; ?>"><?php echo htmlentities($dn1['name'], ENT_QUOTES, 'UTF-8'); ?></a> &gt; <a href="read_song.php?id=<?php echo $id; ?>"><?php echo htmlentities($dn1['title'], ENT_QUOTES, 'UTF-8'); ?></a> &gt; Read the song
     </div>
 	<div class="box_right">
     	<a href="signup.php">Sign Up</a> - <a href="login.php">Login</a>
     </div>
-	<div class="clean"></div>
+    <div class="clean"></div>
 </div>
 <?php
 }
+?>
+<h1><?php echo $dn1['title']; ?></h1>
+<?php
 if(isset($_SESSION['username']))
 {
 ?>
-	<a href="new_song.php?parent=<?php echo $id; ?>" class="button">New song</a>
+	<a href="new_reply.php?id=<?php echo $id; ?>" class="button">Reply</a>
 <?php
 }
-$dn2 = mysql_query('select t.id, t.title, t.authorid, u.username as author, count(r.id) as replies from songs as t left join songs as r on r.parent="'.$id.'" and r.id=t.id and r.id2!=1  left join users as u on u.id=t.authorid where t.parent="'.$id.'" and t.id2=1 group by t.id order by t.timestamp2 desc');
-if(mysql_num_rows($dn2)>0)
-{
+$dn2 = mysql_query('select t.id2, t.authorid, t.message, t.timestamp, u.username as author, u.avatar from songs as t, users as u where t.id="'.$id.'" and u.id=t.authorid order by t.timestamp asc');
 ?>
-<table class="songs_table">
+<table class="messages_table">
 	<tr>
-    	<th class="forum_tops">song</th>
-    	<th class="forum_auth">Author</th>
-    	<th class="forum_nrep">Replies</th>
-<?php
-if(isset($_SESSION['username']) and $_SESSION['username']==$admin)
-{
-?>
-    	<th class="forum_act">Action</th>
-<?php
-}
-?>
+    	<th class="author">Author</th>
+    	<th>Message</th>
 	</tr>
 <?php
 while($dnn2 = mysql_fetch_array($dn2))
 {
 ?>
 	<tr>
-    	<td class="forum_tops"><a href="read_song.php?id=<?php echo $dnn2['id']; ?>"><?php echo htmlentities($dnn2['title'], ENT_QUOTES, 'UTF-8'); ?></a></td>
-    	<td><a href="profile.php?id=<?php echo $dnn2['authorid']; ?>"><?php echo htmlentities($dnn2['author'], ENT_QUOTES, 'UTF-8'); ?></a></td>
-    	<td><?php echo $dnn2['replies']; ?></td>
-<?php
-if(isset($_SESSION['username']) and $_SESSION['username']==$admin)
+    	<td class="author center"><?php
+if($dnn2['avatar']!='')
 {
-?>
-    	<td><a href="delete_song.php?id=<?php echo $dnn2['id']; ?>"><img src="<?php echo $design; ?>/images/delete.png" alt="Delete" /></a></td>
-<?php
+	echo '<img src="'.htmlentities($dnn2['avatar']).'" alt="Image Perso" style="max-width:100px;max-height:100px;" />';
 }
-?>
+?><br /><a href="profile.php?id=<?php echo $dnn2['authorid']; ?>"><?php echo $dnn2['author']; ?></a></td>
+    	<td class="left"><?php if(isset($_SESSION['username']) and ($_SESSION['username']==$dnn2['author'] or $_SESSION['username']==$admin)){ ?><div class="edit"><a href="edit_message.php?id=<?php echo $id; ?>&id2=<?php echo $dnn2['id2']; ?>"><img src="<?php echo $design; ?>/images/edit.png" alt="Edit" /></a></div><?php } ?><div class="date">Date sent: <?php echo date('Y/m/d H:i:s' ,$dnn2['timestamp']); ?></div>
+        <div class="clean"></div>
+    	<?php echo $dnn2['message']; ?></td>
     </tr>
 <?php
 }
 ?>
 </table>
 <?php
-}
-else
-{
-?>
-<div class="message">This band has no song.</div>
-<?php
-}
 if(isset($_SESSION['username']))
 {
 ?>
-	<a href="new_song.php?parent=<?php echo $id; ?>" class="button">New song</a>
+	<a href="new_reply.php?id=<?php echo $id; ?>" class="button">Reply</a>
 <?php
 }
 else
@@ -134,11 +117,11 @@ else
 }
 else
 {
-	echo '<h2>This band doesn\'t exist.</h2>';
+	echo '<h2>This song doesn\'t exist.</h2>';
 }
 }
 else
 {
-	echo '<h2>The ID of the band you want to visit is not defined.</h2>';
+	echo '<h2>The ID of this song is not defined.</h2>';
 }
 ?>
