@@ -55,7 +55,7 @@ if(isset($_SESSION['username']) and $_SESSION['username']==$admin)
 <table class="bands_table">
 	<tr>
     	<th class="forum_cat">band</th>
-    	<th class="forum_ntop">Bands</th>
+    	<th class="forum_ntop">bands</th>
     	<th class="forum_nrep">Replies</th>
 <?php
 if(isset($_SESSION['username']) and $_SESSION['username']==$admin)
