@@ -48,14 +48,14 @@ else
 if(isset($_SESSION['username']) and $_SESSION['username']==$admin)
 {
 ?>
-	<a href="new_band.php" class="button">New band</a>
+	<a href="new_band.php" class="button">New Band</a>
 <?php
 }
 ?>
 <table class="bands_table">
 	<tr>
     	<th class="forum_cat">Band</th>
-    	<th class="forum_ntop">Bands</th>
+    	<th class="forum_ntop">Songs</th>
     	<th class="forum_nrep">Replies</th>
 <?php
 if(isset($_SESSION['username']) and $_SESSION['username']==$admin)
@@ -67,15 +67,15 @@ if(isset($_SESSION['username']) and $_SESSION['username']==$admin)
 ?>
 	</tr>
 <?php
-$dn1 = mysql_query('select c.id, c.name, c.description, c.position, (select count(t.id) from bands as t where t.parent=c.id and t.id2=1) as bands, (select count(t2.id) from bands as t2 where t2.parent=c.id and t2.id2!=1) as replies from bands as c group by c.id order by c.position asc');
+$dn1 = mysql_query('select c.id, c.name, c.description, c.position, (select count(t.id) from songs as t where t.parent=c.id and t.id2=1) as songs, (select count(t2.id) from songs as t2 where t2.parent=c.id and t2.id2!=1) as replies from bands as c group by c.id order by c.position asc');
 $nb_cats = mysql_num_rows($dn1);
 while($dnn1 = mysql_fetch_array($dn1))
 {
 ?>
 	<tr>
-    	<td class="forum_cat"><a href="list_bands.php?parent=<?php echo $dnn1['id']; ?>" class="title"><?php echo htmlentities($dnn1['name'], ENT_QUOTES, 'UTF-8'); ?></a>
+    	<td class="forum_cat"><a href="list_songs.php?parent=<?php echo $dnn1['id']; ?>" class="title"><?php echo htmlentities($dnn1['name'], ENT_QUOTES, 'UTF-8'); ?></a>
         <div class="description"><?php echo $dnn1['description']; ?></div></td>
-    	<td><?php echo $dnn1['bands']; ?></td>
+    	<td><?php echo $dnn1['songs']; ?></td>
     	<td><?php echo $dnn1['replies']; ?></td>
 <?php
 if(isset($_SESSION['username']) and $_SESSION['username']==$admin)
@@ -97,7 +97,7 @@ if(isset($_SESSION['username']) and $_SESSION['username']==$admin)
 if(isset($_SESSION['username']) and $_SESSION['username']==$admin)
 {
 ?>
-	<a href="new_band.php" class="button">New band</a>
+	<a href="new_band.php" class="button">New Band</a>
 <?php
 }
 if(!isset($_SESSION['username']))
