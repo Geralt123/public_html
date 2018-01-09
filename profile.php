@@ -36,7 +36,7 @@ else
 ?>
 <div class="box">
 	<div class="box_left">
-    	<a href="<?php echo $url_home; ?>">Forum Index</a> &gt; <a href="users.php">Liste des utilisateurs</a> &gt; Profile of an user
+    	<a href="<?php echo $url_home; ?>">Forum Index</a> &gt; <a href="users.php">List of all the users</a> &gt; Profile of an user
     </div>
 	<div class="box_right">
     	<a href="signup.php">Sign Up</a> - <a href="login.php">Login</a>
@@ -77,13 +77,14 @@ else
     	<td class="left"><h1><?php echo htmlentities($dnn['username'], ENT_QUOTES, 'UTF-8'); ?></h1>
     	Email: <?php echo htmlentities($dnn['email'], ENT_QUOTES, 'UTF-8'); ?><br />
         This user joined the website on <?php echo date('Y/m/d',$dnn['signup_date']); ?></td>
+	This user is member of <?php echo htmlentities($dnn['band'], ENT_QUOTES, 'UTF-8'); ?></td>
     </tr>
 </table>
 <?php
 if(isset($_SESSION['username']) and $_SESSION['username']!=$dnn['username'])
 {
 ?>
-<br /><a href="new_pm.php?recip=<?php echo urlencode($dnn['username']); ?>" class="big">Envoyer un MP à "<?php echo htmlentities($dnn['username'], ENT_QUOTES, 'UTF-8'); ?>"</a>
+<br /><a href="new_pm.php?recip=<?php echo urlencode($dnn['username']); ?>" class="big">Send a PM to"<?php echo htmlentities($dnn['username'], ENT_QUOTES, 'UTF-8'); ?>"</a>
 <?php
 }
 	}
@@ -95,6 +96,12 @@ if(isset($_SESSION['username']) and $_SESSION['username']!=$dnn['username'])
 else
 {
 	echo 'The ID of this user is not defined.';
+}
+?>
+<?php
+if(isset($_SESSION['username']) and $_SESSION['username']==$admin)
+{
+
 }
 ?>
 		</div>
