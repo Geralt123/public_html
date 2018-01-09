@@ -52,6 +52,7 @@ This is the list of all the users:
     	<th>ID</th>
     	<th>Username</th>
     	<th>Email</th>
+    	<th>Band</th>
     </tr>
 <?php
 $req = mysql_query('select id, username, email from users');
@@ -62,6 +63,7 @@ while($dnn = mysql_fetch_array($req))
     	<td><?php echo $dnn['id']; ?></td>
     	<td><a href="profile.php?id=<?php echo $dnn['id']; ?>"><?php echo htmlentities($dnn['username'], ENT_QUOTES, 'UTF-8'); ?></a></td>
     	<td><?php echo htmlentities($dnn['email'], ENT_QUOTES, 'UTF-8'); ?></td>
+    	<td><?php echo htmlentities($dnn['band'], ENT_QUOTES, 'UTF-8'); ?></td>
     </tr>
 <?php
 }
