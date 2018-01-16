@@ -4,7 +4,7 @@ include('config.php');
 if(isset($_GET['id']))
 {
 	$id = intval($_GET['id']);
-if(isset($_SESSION['username']))
+if(isset($_SESSION['username']) AND !$_SESSION['band']=='ban' )
 {
 	$dn1 = mysql_fetch_array(mysql_query('select count(t.id) as nb1, t.title, t.parent, c.name from songs as t, bands as c where t.id="'.$id.'" and t.id2=1 and c.id=t.parent group by t.id'));
 if($dn1['nb1']>0)
