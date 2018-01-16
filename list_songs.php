@@ -51,11 +51,12 @@ else
 </div>
 <?php
 }
-if(isset($_SESSION['username']))
+if(isset($_SESSION['username']) AND $_SESSION['band']==htmlentities($dn1['name'])
 {
 ?>
-	<a href="new_song.php?parent=<?php echo $id; ?>" class="button">New song</a>
+	<a href="new_song.php?parent=<?php echo $id; ?>" class="button">New Song</a>
 <?php
+
 }
 $dn2 = mysql_query('select t.id, t.title, t.authorid, u.username as author, count(r.id) as replies from songs as t left join songs as r on r.parent="'.$id.'" and r.id=t.id and r.id2!=1  left join users as u on u.id=t.authorid where t.parent="'.$id.'" and t.id2=1 group by t.id order by t.timestamp2 desc');
 if(mysql_num_rows($dn2)>0)
@@ -63,7 +64,7 @@ if(mysql_num_rows($dn2)>0)
 ?>
 <table class="songs_table">
 	<tr>
-    	<th class="forum_tops">song</th>
+    	<th class="forum_tops">Song</th>
     	<th class="forum_auth">Author</th>
     	<th class="forum_nrep">Replies</th>
 <?php
@@ -104,7 +105,7 @@ else
 <div class="message">This band has no song.</div>
 <?php
 }
-if(isset($_SESSION['username']))
+if(isset($_SESSION['username']) AND $_SESSION['band']==htmlentities($dn1['name']))
 {
 ?>
 	<a href="new_song.php?parent=<?php echo $id; ?>" class="button">New song</a>

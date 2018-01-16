@@ -22,7 +22,7 @@ $nb_new_pm = $nb_new_pm['nb_new_pm'];
 ?>
 <div class="box">
 	<div class="box_left">
-    	<a href="<?php echo $url_home; ?>">Forum Index</a> &gt; <a href="users.php">Liste des utilisateurs</a> &gt; Profile of an user
+    	<a href="<?php echo $url_home; ?>">Forum Index</a> &gt; <a href="users.php">List of all users</a> &gt; Profile of an user
     </div>
 	<div class="box_right">
     	<a href="list_pm.php">Your messages(<?php echo $nb_new_pm; ?>)</a> - <a href="profile.php?id=<?php echo $_SESSION['userid']; ?>"><?php echo htmlentities($_SESSION['username'], ENT_QUOTES, 'UTF-8'); ?></a> (<a href="login.php">Logout</a>)
@@ -48,7 +48,7 @@ else
 if(isset($_GET['id']))
 {
 	$id = intval($_GET['id']);
-	$dn = mysql_query('select username, email, avatar, signup_date from users where id="'.$id.'"');
+	$dn = mysql_query('select username, email, avatar, signup_date, band from users where id="'.$id.'"');
 	if(mysql_num_rows($dn)>0)
 	{
 		$dnn = mysql_fetch_array($dn);
@@ -77,8 +77,12 @@ else
     	<td class="left"><h1><?php echo htmlentities($dnn['username'], ENT_QUOTES, 'UTF-8'); ?></h1>
     	Email: <?php echo htmlentities($dnn['email'], ENT_QUOTES, 'UTF-8'); ?><br />
         This user joined the website on <?php echo date('Y/m/d',$dnn['signup_date']); ?><br />
+<?php
+if($dnn['band']!='')
+{
 	This user is member of <?php echo htmlentities($dnn['band'], ENT_QUOTES, 'UTF-8'); ?></td>
     </tr>
+}
 </table>
 <?php
 if(isset($_SESSION['username']) and $_SESSION['username']!=$dnn['username'])
@@ -99,9 +103,13 @@ else
 }
 ?>
 <?php
-if(isset($_SESSION['username']) and $_SESSION['username']==$admin)
+if(isset($_SESSION['username']) and $_SESSION['userband']=='admin')
 {
+if(get_magic_quotes_gpc())
+{
+$dnn['band'] = stripslashes($_POST['band']);
 
+}
 }
 ?>
 		</div>

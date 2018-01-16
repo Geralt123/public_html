@@ -27,7 +27,7 @@ else
 	$ousername = '';
 	if(isset($_POST['username'], $_POST['password']))
 	{
-		if(get_magic_quotes_gpc())
+
 		{
 			$ousername = stripslashes($_POST['username']);
 			$username = mysql_real_escape_string(stripslashes($_POST['username']));
