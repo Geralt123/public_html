@@ -4,10 +4,10 @@ include('config.php');
 if(isset($_GET['id']))
 {
 $id = intval($_GET['id']);
-$dn1 = mysql_fetch_array(mysql_query('select count(id) as nb1, name, description from bands where id="'.$id.'" group by id'));
+$dn1 = mysql_fetch_array(mysql_query('select count(id) as nb1, name, description, band from bands where id="'.$id.'" group by id'));
 if($dn1['nb1']>0)
 {
-if(isset($_SESSION['username']) and $_SESSION['username']==$admin)
+if(isset($_SESSION['username']) and ($_SESSION['band']=='admin' or $_SESSION['band']==$dn1['name']))
 {
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -36,17 +36,21 @@ $nb_new_pm = $nb_new_pm['nb_new_pm'];
     <div class="clean"></div>
 </div>
 <?php
-if(isset($_POST['name'], $_POST['description']) and $_POST['name']!='')
+if(isset($_POST['name'], $_POST['description'], $_POST['play']) and $_POST['name']!='')
 {
 	$name = $_POST['name'];
 	$description = $_POST['description'];
+	$play = $_POST['play'];
 	if(get_magic_quotes_gpc())
 	{
 		$name = stripslashes($name);
 		$description = stripslashes($description);
+		$play = stripslashes($play);
 	}
 	$name = mysql_real_escape_string($name);
 	$description = mysql_real_escape_string($description);
+	$play = mysql_real_escape_string($play);
+
 	if(mysql_query('update bands set name="'.$name.'", description="'.$description.'" where id="'.$id.'"'))
 	{
 	?>
@@ -79,7 +83,7 @@ else
 }
 else
 {
-	echo '<h2>You must be logged as an administrator to access this page: <a href="login.php">Login</a> - <a href="signup.php">Sign Up</a></h2>';
+	echo '<h2>You must be logged as an administrator or member of this band to access this page: <a href="login.php">Login</a> - <a href="signup.php">Sign Up</a></h2>';
 }
 }
 else
