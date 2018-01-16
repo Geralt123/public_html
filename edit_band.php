@@ -50,7 +50,7 @@ if(isset($_POST['name'], $_POST['description'], $_POST['play']) and $_POST['name
 	$name = mysql_real_escape_string($name);
 	$description = mysql_real_escape_string($description);
 	$play = mysql_real_escape_string($play);
-
+	if(preg_match('www.youtube.com/embed\.[a-z]',$play){
 	if(mysql_query('update bands set name="'.$name.'", description="'.$description.'" where id="'.$id.'"'))
 	{
 	?>
@@ -59,6 +59,10 @@ if(isset($_POST['name'], $_POST['description'], $_POST['play']) and $_POST['name
 	<?php
 	}
 	else
+	{
+		echo 'An error occured while editing the band.';
+	}
+			else
 	{
 		echo 'An error occured while editing the band.';
 	}
